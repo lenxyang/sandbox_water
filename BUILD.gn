@@ -3,5 +3,6 @@ group("water") {
   deps = [
     # "keithlantz",
     "tile",
+    "dft_ocean",
   ]
 }
