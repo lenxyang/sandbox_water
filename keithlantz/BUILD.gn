@@ -1,31 +1,37 @@
 
 
-executable("water1") {
+group("keithlantz") {
+  deps = [
+    ":part1",
+  ]
+}
+
+executable("part1") {
   output_name = "keithlanzt_part1"
   sources = [
-    "src/buffer.cc",
-    "src/buffer.h",
-    "src/complex.cc",
-    "src/complex.h",
-    "src/fft.cc",
-    "src/fft.h",
-    "src/glhelper.cc",
-    "src/glhelper.h",
-    "src/joystick.cc",
-    "src/joystick.h",
-    #"src/keyboard.cc",
-    #"src/keyboard.h",
-    "src/misc.cc",
-    "src/misc.h",
-    #"src/mouse.cc",
-    #"src/mouse.h",
-    "src/obj.cc",
-    "src/obj.h",
-    "src/timer.cc",
-    "src/timer.h",
-    "src/vector.cc",
-    "src/vector.h",
-    "main.cc",
+    "src/src/buffer.cc",
+    "src/src/buffer.h",
+    "src/src/complex.cc",
+    "src/src/complex.h",
+    "src/src/fft.cc",
+    "src/src/fft.h",
+    "src/src/glhelper.cc",
+    "src/src/glhelper.h",
+    "src/src/joystick.cc",
+    "src/src/joystick.h",
+    #"src/src/keyboard.cc",
+    #"src/src/keyboard.h",
+    "src/src/misc.cc",
+    "src/src/misc.h",
+    #"src/src/mouse.cc",
+    #"src/src/mouse.h",
+    "src/src/obj.cc",
+    "src/src/obj.h",
+    "src/src/timer.cc",
+    "src/src/timer.h",
+    "src/src/vector.cc",
+    "src/src/vector.h",
+    "src/main.cc",
   ]
   deps = [
     "//azer/third_party/glm",
