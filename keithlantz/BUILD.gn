@@ -37,7 +37,7 @@ executable("part1") {
   deps = [
     "//azer/third_party/glm",
     "//azer/third_party/glew",
-    "//azer/third_party2/SDL:SDL-1.2",
+    "//azer/externlib/SDL:SDL-1.2",
     "//base:base",
   ]
   include_dirs = ["src"]
