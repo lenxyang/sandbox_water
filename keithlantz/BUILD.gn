@@ -17,14 +17,8 @@ executable("part1") {
     "src/src/fft.h",
     "src/src/glhelper.cc",
     "src/src/glhelper.h",
-    "src/src/joystick.cc",
-    "src/src/joystick.h",
-    #"src/src/keyboard.cc",
-    #"src/src/keyboard.h",
     "src/src/misc.cc",
     "src/src/misc.h",
-    #"src/src/mouse.cc",
-    #"src/src/mouse.h",
     "src/src/obj.cc",
     "src/src/obj.h",
     "src/src/timer.cc",
@@ -32,10 +26,20 @@ executable("part1") {
     "src/src/vector.cc",
     "src/src/vector.h",
     "src/main.cc",
+
+    #"src/src/joystick.cc",
+    #"src/src/joystick.h",
+    #"src/src/keyboard.cc",
+    #"src/src/keyboard.h",
+    #"src/src/mouse.cc",
+    #"src/src/mouse.h",
   ]
   deps = [
     "//azer/third_party/glm",
     "//azer/third_party/glew",
+    "//azer/third_party2/SDL:SDL-1.2",
+    "//base:base",
   ]
   include_dirs = ["src"]
+  configs += ["//azer/build/config:opengl"]
 }

@@ -21,4 +21,6 @@ class cFFT {
 	void fft(complex* input, complex* output, int stride, int offset);
 };
 
+#define M_PI 3.14
+
 #endif

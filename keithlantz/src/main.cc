@@ -1,17 +1,20 @@
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <tchar.h>
+#include <stdlib.h>
+
+#include <SDL.h>
+#include <SDL_image.h>
 #include <sstream>
 #include <fstream>
 
 #include <GL/glew.h>
 
-#include "glm-0.9.2.6/glm/glm.hpp"
-#include "glm-0.9.2.6/glm/gtc/matrix_transform.hpp"
-#include "glm-0.9.2.6/glm/gtc/type_ptr.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
-#include "src/keyboard.h"
-#include "src/joystick.h"
-#include "src/mouse.h"
+// #include "src/keyboard.h"
+// #include "src/joystick.h"
+// #include "src/mouse.h"
 #include "src/glhelper.h"
 #include "src/timer.h"
 #include "src/misc.h"
@@ -22,8 +25,6 @@
 #include "src/fft.h"
 
 
-
-
 struct vertex_ocean {
   GLfloat   x,   y,   z; // vertex
   GLfloat  nx,  ny,  nz; // normal
@@ -32,17 +33,11 @@ struct vertex_ocean {
   GLfloat  ox,  oy,  oz; // original position
 };
 
-
-
-
 struct complex_vector_normal {	// structure used with discrete fourier transform
   complex h;		// wave height
   vector2 D;		// displacement
   vector3 n;		// normal
 };
-
-
-
 
 class cOcean {
  private:
@@ -151,7 +146,9 @@ cOcean::cOcean(const int N, const float A, const vector2 w, const float length, 
     }
   }
 
-  createProgram(glProgram, glShaderV, glShaderF, "src/oceanv.sh", "src/oceanf.sh");
+  createProgram(glProgram, glShaderV, glShaderF,
+                "azer/sandbox/water/keithlantz/src/src/oceanv.sh",
+                "azer/sandbox/water/keithlantz/src/src/oceanf.sh");
   vertex         = glGetAttribLocation(glProgram, "vertex");
   normal         = glGetAttribLocation(glProgram, "normal");
   texture        = glGetAttribLocation(glProgram, "texture");
@@ -473,7 +470,7 @@ void cOcean::render(float t, glm::vec3 light_pos, glm::mat4 Projection, glm::mat
   }
 }
 
-int main(int argc, char *argv[]) {
+int _tmain(int argc, char *argv[]) {
 
   // constants
   const int WIDTH  = 1280, HEIGHT = 720;
@@ -482,9 +479,9 @@ int main(int argc, char *argv[]) {
   cBuffer buffer(WIDTH, HEIGHT);
 
   // controls
-  cKeyboard kb; int key_up, key_down, key_left, key_right, keyx, keyz;
-  cJoystick js; joystick_position jp[2];
-  cMouse    ms; mouse_state mst;
+  // cKeyboard kb; int key_up, key_down, key_left, key_right, keyx, keyz;
+  // cJoystick js; joystick_position jp[2];
+  // cMouse    ms; mouse_state mst;
 
   // timers
   cTimer t0; double elapsed0; cTimer t1; double elapsed1; cTimer t2; double elapsed2; cTimer video; double elapsed_video;
@@ -544,6 +541,7 @@ int main(int argc, char *argv[]) {
       x     += -cos(-yaw*M_PI/180.0f)*jp[0].x*elapsed0*30 + sin(-yaw*M_PI/180.0f)*jp[0].y*elapsed0*30;
       z     +=  cos(-yaw*M_PI/180.0f)*jp[0].y*elapsed0*30 + sin(-yaw*M_PI/180.0f)*jp[0].x*elapsed0*30;
     */
+    /*
     mst = ms.getMouseState();
     yaw   +=  mst.axis[0]*elapsed0*20;
     pitch += -mst.axis[1]*elapsed0*20;
@@ -556,6 +554,7 @@ int main(int argc, char *argv[]) {
     keyz =  key_up   + -key_down;
     x     += -cos(-yaw*M_PI/180.0f)*keyx*elapsed0*30 + sin(-yaw*M_PI/180.0f)*keyz*elapsed0*30;
     z     +=  cos(-yaw*M_PI/180.0f)*keyz*elapsed0*30 + sin(-yaw*M_PI/180.0f)*keyx*elapsed0*30;
+    */
 
     // rendering
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

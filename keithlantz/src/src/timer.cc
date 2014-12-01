@@ -1,8 +1,8 @@
 #include "timer.h"
 
 cTimer::cTimer() {
-	clock_gettime(CLOCK_REALTIME, &process_start);
-	frame_start = process_start;
+  process_start = ::base::TimeTicks::HighResNow();;
+  frame_start = process_start;
 }
 
 cTimer::~cTimer() {
@@ -10,9 +10,8 @@ cTimer::~cTimer() {
 }
 
 double cTimer::elapsed(bool frame) {
-	clock_gettime(CLOCK_REALTIME, &current);
-	double elapsed = frame ? (current.tv_sec + current.tv_nsec / 1000000000.0 -   frame_start.tv_sec -   frame_start.tv_nsec / 1000000000.0) :
-				 (current.tv_sec + current.tv_nsec / 1000000000.0 - process_start.tv_sec - process_start.tv_nsec / 1000000000.0);
-	frame_start = current;
-	return elapsed;
+  ::base::TimeTicks now = ::base::TimeTicks::HighResNow();
+  ::base::TimeDelta delta = now - frame_start;
+  frame_start = now;
+  return delta.InSecondsF();
 }

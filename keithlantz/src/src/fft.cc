@@ -1,9 +1,11 @@
 #include "fft.h"
 
+#include <cmath>
+
 cFFT::cFFT(unsigned int N) : N(N), reversed(0), W(0), pi2(2 * M_PI) {
   c[0] = c[1] = 0;
 
-  log_2_N = log(N)/log(2);
+  log_2_N = std::log(N)/std::log(2);
 
   reversed = new unsigned int[N];		// prep bit reversals
   for (int i = 0; i < N; i++) reversed[i] = reverse(i);
