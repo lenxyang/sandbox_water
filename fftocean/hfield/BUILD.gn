@@ -1,0 +1,18 @@
+
+executable("hfield") {
+  output_name = "fftocean_hfield"
+  sources = [
+    "main.cc",
+    "tile.cc",
+    "tile.h",
+  ]
+
+  deps = [
+    "//base",
+    "//azer/render",
+    "//azer/sandbox/base",
+  ]
+
+  gen_dir = rebase_path(target_gen_dir)
+  defines = ["EFFECT_GEN_DIR=\"$gen_dir/\""]
+}
