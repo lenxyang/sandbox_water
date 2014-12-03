@@ -1,3 +1,9 @@
+import("//azer/build/templates/afx.gni")
+
+afx("effect") {
+  source = "diffuse.afx"
+  filename = "diffuse"
+}
 
 executable("hfield") {
   output_name = "fftocean_hfield"
@@ -11,6 +17,7 @@ executable("hfield") {
     "//base",
     "//azer/render",
     "//azer/sandbox/base",
+    ":effect",
   ]
 
   gen_dir = rebase_path(target_gen_dir)

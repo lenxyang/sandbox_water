@@ -5,8 +5,14 @@
 
 #include "base/basictypes.h"
 
-template<class TVertex>
-class Tile {
+
+/**
+ * TVertex: 顶点的结构体类型
+ * TVertexInitPolicy 初始化顶点的 policy
+ */
+template<class TVertex, class TVertexInitPolicy>
+class Tile : public TVertexInitPolicy {
+  using TVertexInitPolicy::InitVertex;
  public:
   /**
    * tile 的 grid line 个数的计算公式是 2 ^ level + 1
@@ -14,11 +20,12 @@ class Tile {
    */
   Tile(const int level = 8, float width = 1.0f)
       : kGridLineNum((1 << level) + 1)
-      , kLevel_(level)
-      , kCellWidth(width) {
+      , kLevel(level)
+      , kVertexNum(kGridLineNum * kGridLineNum) {
   }
 
   class Pitch {
+   public:
     int left;
     int right;
     int top;
@@ -30,61 +37,53 @@ class Tile {
     Pitch& operator = (const Pitch& pitch);
   };
 
-  TVertex* first();
-  TVertex* next(TVertex* cur);
-  const TVertex* first() const;
-  const TVertex* next(TVertex* cur) const;
-
   int32 grid_line_num() const { return kGridLineNum;}
-  int32 vertices_num() const { return vertices_.size();}
-  float cell_width() const { return kCellWidth;}
-
-  int32* CalcIndices(int level, const Pitch& pitch, int32* start);
+  int32 vertices_num() const { return kVertexNum;}
+  int32 indices_num() const { 
+    return (grid_line_num() - 1) * (grid_line_num() - 1) * 6;
+  }
+  TVertex* InitVerticesData(TVertex* vertex) const;
+  int32* CalcIndicesForPitch(int level, const Pitch& pitch, int32* start) const;
+  int32* CalcIndices(int32* start) const;
  private:
-  std::vector<TVertex> vertices_;
   const int32 kGridLineNum;
   const int32 kLevel; 
-  const float kCellWidth;
+  const int32 kVertexNum;
   DISALLOW_COPY_AND_ASSIGN(Tile);
 };
 
-template<class TVertex>
-TVertex* Tile<TVertex>::first() {
-  return &(vertices_[0]);
-}
-
-template<class TVertex>
-TVertex* Tile<TVertex>::next(TVertex* cur) {
-  if (cur - &(vertices_[0]) < vertices_.size()) {
-    return cur+1;
-  } else {
-    return NULL;
+template<class TVertex, class TVertexInitPolicy>
+TVertex* Tile<TVertex, TVertexInitPolicy>::InitVerticesData(TVertex* start) const {
+  TVertex* cur = start;
+  for (int i = 0; i < kGridLineNum; ++i) {
+    for (int j = 0; j < kGridLineNum; ++j) {
+      int idx = i * kGridLineNum + j;
+      InitVertex(cur, i, j, *this);
+      cur++;
+    }
   }
+  return cur;
 }
 
-template<class TVertex>
-const TVertex* Tile<TVertex>::first() const {
-  return &(vertices_[0]);
+template<class TVertex, class TVertexInitPolicy>
+int32* Tile<TVertex, TVertexInitPolicy>::CalcIndices(int32* start) const {
+  Pitch pitch;
+  pitch.left = 0;
+  pitch.top = 0;
+  pitch.right = kGridLineNum - 1;
+  pitch.bottom = kGridLineNum - 1;
+  return CalcIndicesForPitch(0, pitch, start);
 }
 
-template<class TVertex>
-const TVertex* Tile<TVertex>::next(TVertex* cur) const {
-  if (cur - &(vertices_[0]) < vertices_.size()) {
-    return cur+1;
-  } else {
-    return NULL;
-  }
-}
-
-template<class TVertex>
-int32* Tile<TVertex>::CalcIndices(int level, const Pitch& pitch, 
-                                  int32* start) {
+template<class TVertex, class TVertexInitPolicy>
+int32* Tile<TVertex, TVertexInitPolicy>::CalcIndicesForPitch(
+    int level, const Pitch& pitch, int32* start) const {
   const int step = 1 << level;
   int32* cur = start;
   for (int i = pitch.top; i < pitch.bottom; i += step) {
     for (int j = pitch.left; j < pitch.right; j += step) {
-      int cur_line = i * kGridLine;
-      int next_line = (i + step) * kGridLine;
+      int cur_line = i * kGridLineNum;
+      int next_line = (i + step) * kGridLineNum;
       *cur++ = cur_line  + j;
       *cur++ = next_line + j;
       *cur++ = next_line + j + step;
@@ -96,9 +95,10 @@ int32* Tile<TVertex>::CalcIndices(int level, const Pitch& pitch,
   return cur;
 }
 
-template<class TVertex>
-typename Tile<TVertex>::Pitch& Tile<TVertex>::Pitch::operator = (
-    const typename Tile<TVertex>::Pitch& pitch) {
+template<class TVertex, class TVertexInitPolicy>
+typename Tile<TVertex, TVertexInitPolicy>::Pitch& 
+Tile<TVertex, TVertexInitPolicy>::Pitch::operator = (
+    const typename Tile<TVertex, TVertexInitPolicy>::Pitch& pitch) {
   left = pitch.left;
   right = pitch.right;
   top = pitch.top;
