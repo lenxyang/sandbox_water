@@ -1,0 +1,25 @@
+import("//azer/build/templates/afx.gni")
+
+afx("effect") {
+  source = "diffuse.afx"
+  filename = "diffuse"
+}
+
+executable("tile") {
+  output_name = "fftocean_tile"
+  sources = [
+    "main.cc",
+    "tile.cc",
+    "tile.h",
+  ]
+
+  deps = [
+    "//base",
+    "//azer/render",
+    "//azer/sandbox/base",
+    ":effect",
+  ]
+
+  gen_dir = rebase_path(target_gen_dir)
+  defines = ["EFFECT_GEN_DIR=\"$gen_dir/\""]
+}

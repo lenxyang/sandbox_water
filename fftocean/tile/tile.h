@@ -7,8 +7,6 @@
 
 
 /**
- * class Tile
- * 作用：创建 tile 对应的 VertexData 和 IndicesData
  * TVertex: 顶点的结构体类型
  * TVertexInitPolicy 初始化顶点的 policy
  */

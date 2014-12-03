@@ -1,6 +1,7 @@
 
 group("fftocean") {
   deps = [
+    "tile",
     "hfield",
   ]
 }
