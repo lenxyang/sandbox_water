@@ -2,7 +2,7 @@
 #include "azer/base/appinit.h"
 #include "base/files/file_path.h"
 #include "azer/sandbox/base/camera_control.h"
-#include "azer/sandbox/water/fftocean/hfield/tile.h"
+#include "azer/sandbox/water/fftocean/tile/tile.h"
 
 #include <tchar.h>
 

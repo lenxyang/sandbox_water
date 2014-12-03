@@ -9,7 +9,6 @@ executable("tile") {
   output_name = "fftocean_tile"
   sources = [
     "main.cc",
-    "tile.cc",
     "tile.h",
   ]
 

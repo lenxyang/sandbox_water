@@ -8,6 +8,8 @@ afx("effect") {
 executable("hfield") {
   output_name = "fftocean_hfield"
   sources = [
+    "dcthfield.cc",
+    "dcthfield.h",
     "main.cc",
     "tile.cc",
     "tile.h",
