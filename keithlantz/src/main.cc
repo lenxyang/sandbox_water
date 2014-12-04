@@ -484,7 +484,7 @@ int _tmain(int argc, char *argv[]) {
   // cMouse    ms; mouse_state mst;
 
   // timers
-  cTimer t0; double elapsed0; cTimer t1; double elapsed1; cTimer t2; double elapsed2; cTimer video; double elapsed_video;
+  cTimer t0; double elapsed0; cTimer t1; double elapsed1; cTimer t2; double elapsed2; cTimer video; double elapsed_video = 0.1;
 
   // application is active.. fullscreen flag.. screen grab.. video grab..
   bool active = true, fullscreen = false, screen_grab = false, video_grab = false;
@@ -565,14 +565,15 @@ int _tmain(int argc, char *argv[]) {
     View  = glm::rotate(View, yaw,   glm::vec3(0.0f, 1.0f, 0.0f));
     View  = glm::translate(View, glm::vec3(x, -50, z));
     light_position = glm::vec3(1000.0f, 100.0f, -1000.0f);
-
     if (video_grab) {
       elapsed_video += 1.0f/30.0f;
       ocean.render(elapsed_video, light_position, Projection, View, Model, true);
       SDL_GL_SwapBuffers();
       buffer.save(true);
     } else {
-      ocean.render(t1.elapsed(false), light_position, Projection, View, Model, false);
+      // ocean.render(t1.elapsed(false), light_position, Projection, View, Model, true);
+	  elapsed_video += 1.0f / 30.0f;
+	  ocean.render(elapsed_video, light_position, Projection, View, Model, true);
       SDL_GL_SwapBuffers();
     }
 
