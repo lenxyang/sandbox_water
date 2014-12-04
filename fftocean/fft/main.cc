@@ -26,7 +26,7 @@ class VertexInit {
 class MainDelegate : public azer::WindowHost::Delegate {
  public:
   MainDelegate() 
-      : tile_(5)
+      : tile_(6)
       , tick_(0.1f)
       , hfield_(&tile_, 1.0f) {
   }
@@ -74,7 +74,9 @@ void MainDelegate::InitPhysicsBuffer(azer::RenderSystem* rs) {
   DiffuseEffect::Vertex* v = (DiffuseEffect::Vertex*)vdataptr_->pointer();
   DiffuseEffect::Vertex* vend = 
       tile_.InitVerticesData<DiffuseEffect::Vertex>(v, VertexInit());
-  hfield_.SimulateWaveFFT<DiffuseEffect::Vertex>(tick_++, v);
+  tick_ += 1.0f / 30.0f;
+  hfield_.SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
+  
   DCHECK_EQ(vend - v, tile_.vertices_num());
   
   azer::IndicesData idata(tile_.indices_num(), azer::IndicesData::kUint32);
@@ -95,10 +97,10 @@ void MainDelegate::OnUpdateScene(double time, float delta_time) {
   if( ::GetAsyncKeyState('Z') & 0x8000f ) {
     uint32 size = tile_.vertices_num() * sizeof(DiffuseEffect::Vertex);
     DiffuseEffect::Vertex* v = (DiffuseEffect::Vertex*)vdataptr_->pointer();
+    tick_ += 1.0f / 30.0f;
     hfield_.SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
     azer::HardwareBufferDataPtr hbptr(vb_->map(azer::kWriteDiscard));
     memcpy(hbptr->data_ptr(), v, size);
-    tick_ += 0.1f;
     vb_->unmap();
   }
 }
