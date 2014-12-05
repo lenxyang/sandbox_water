@@ -2,12 +2,15 @@
 
 group("keithlantz") {
   deps = [
-    ":part1",
+    ":dct",
   ]
 }
 
-executable("part1") {
-  output_name = "keithlanzt_part1"
+config("keithlantz-config") {
+  include_dirs = ["src"]
+}
+
+static_library("lib") {
   sources = [
     "src/src/buffer.cc",
     "src/src/buffer.h",
@@ -25,8 +28,8 @@ executable("part1") {
     "src/src/timer.h",
     "src/src/vector.cc",
     "src/src/vector.h",
-    "src/main.cc",
-
+    "src/ocean.cc",
+    "src/ocean.h",
     #"src/src/joystick.cc",
     #"src/src/joystick.h",
     #"src/src/keyboard.cc",
@@ -34,12 +37,21 @@ executable("part1") {
     #"src/src/mouse.cc",
     #"src/src/mouse.h",
   ]
+  public_configs = [":keithlantz-config"]
   deps = [
     "//azer/third_party/glm",
     "//azer/third_party/glew",
     "//azer/externlib/SDL:SDL-1.2",
     "//base:base",
   ]
-  include_dirs = ["src"]
+  public_deps = deps
+}
+
+executable("dct") {
+  output_name = "keithlantz_dct"
+  sources = [
+    "src/main.cc",
+  ]
+  deps = [":lib"]
   configs += ["//azer/build/config:opengl"]
 }
