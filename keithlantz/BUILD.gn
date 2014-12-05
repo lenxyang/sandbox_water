@@ -3,6 +3,7 @@
 group("keithlantz") {
   deps = [
     ":dct",
+    ":fft",
   ]
 }
 
@@ -50,7 +51,16 @@ static_library("lib") {
 executable("dct") {
   output_name = "keithlantz_dct"
   sources = [
-    "src/main.cc",
+    "src/dct_main.cc",
+  ]
+  deps = [":lib"]
+  configs += ["//azer/build/config:opengl"]
+}
+
+executable("fft") {
+  output_name = "keithlantz_fft"
+  sources = [
+    "src/fft_main.cc",
   ]
   deps = [":lib"]
   configs += ["//azer/build/config:opengl"]
