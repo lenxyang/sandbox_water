@@ -75,7 +75,7 @@ void FFT::fft(std::complex<float>* input, std::complex<float>* output,
       for (int k = size_over_2; k < size; ++k) {
         int index = size * j + k;
         int index2 = size * j - size_over_2 + k;
-		c[cur][index] = c[prev][index2] - c[prev][index] * omega(w, k - size_over_2);
+        c[cur][index] = c[prev][index2] - c[prev][index] * omega(w, k - size_over_2);
       }
     }
 

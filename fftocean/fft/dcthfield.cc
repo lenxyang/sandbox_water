@@ -85,7 +85,7 @@ std::complex<float> DCTHField::tilde(float t , int n, int m) {
   float cos_ = std::cos(omegat);
   float sin_ = std::sin(omegat);
   std::complex<float> c0(cos_, sin_);
-  std::complex<float> c1(cos_, sin_);
+  std::complex<float> c1(cos_, -sin_);
   std::complex<float> res = htilde0 * c0 + htilde0mk * c1;
   return res;
 }
