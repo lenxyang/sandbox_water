@@ -2,6 +2,7 @@
 
 #include "azer/math/math.h"
 
+using azer::kPI;
 const float FFT::kPI2 = azer::kPI * azer::kPI;
 
 FFT::FFT(const int dim) 
@@ -35,7 +36,7 @@ FFT::~FFT() {
 }
 
 std::complex<float> FFT::calc_omega(int x, int N) const {
-  return std::complex<float>(std::cos(kPI2 * x/ N), sin(kPI2 * x / N));
+  return std::complex<float>(std::cos(kPI * 2.0f * x/ N), sin(kPI * 2.0f * x / N));
 }
 
 const std::complex<float>& FFT::omega(int n, int m) const {

@@ -32,8 +32,8 @@ DCTHField::DCTHField(Tile* tile, float unit_width)
     , N(tile->cell_num())
 	, fft_(tile->cell_num()) {
   nodes_.reset(new Node[(N + 1) * (N + 1)]);
-  for (int n = 0; n < tile->grid_line_num(); ++n) {
-    for (int m = 0; m < tile->grid_line_num(); ++m) {
+  for (int m = 0; m < tile->grid_line_num(); ++m) {
+    for (int n = 0; n < tile->grid_line_num(); ++n) {
       int index = m * tile->grid_line_num() + n;
       nodes_.get()[index].h0 = tilde0(n, m);
       nodes_.get()[index]._h0 = std::conj(tilde0(-n, -m));
@@ -77,7 +77,7 @@ std::complex<float> DCTHField::tilde0(int n, int m) {
   return r * sqrt(phillips(n, m) / 2.0f);
 }
 
-std::complex<float> DCTHField::tilde(float t , int n, int m) {
+std::complex<float> DCTHField::tilde(float t, int n, int m) {
   int index = m * (N + 1) + n;
   std::complex<float> htilde0(nodes_.get()[index].h0);
   std::complex<float> htilde0mk(nodes_.get()[index]._h0);
