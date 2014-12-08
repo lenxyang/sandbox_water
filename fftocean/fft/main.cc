@@ -26,7 +26,7 @@ class VertexInit {
 class MainDelegate : public azer::WindowHost::Delegate {
  public:
   MainDelegate() 
-      : tile_(6)
+      : tile_(4)
       , tick_(0.1f) {
   }
   virtual void OnCreate() {}
