@@ -3,11 +3,13 @@
 int _tmain(int argc, char *argv[]) {
 
   // constants
-  const int WIDTH  = 1280, HEIGHT = 720;
+  const int WIDTH  = 800, HEIGHT = 600;
 	
   // buffer for grabs
   cBuffer buffer(WIDTH, HEIGHT);
 
+  int keyx = 0;
+  int keyz = 0;
   // controls
   // cKeyboard kb; int key_up, key_down, key_left, key_right, keyx, keyz;
   // cJoystick js; joystick_position jp[2];
@@ -24,7 +26,7 @@ int _tmain(int argc, char *argv[]) {
   SDL_Event event;
 
   // ocean simulator
-  cOcean ocean(64, 0.0005f, vector2(0.0f,32.0f), 64, false);
+  cOcean ocean(16, 0.0005f, vector2(0.0f,32.0f), 16, false);
 
   // model view projection matrices and light position
   glm::mat4 Projection = glm::perspective(45.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f); 
@@ -72,20 +74,31 @@ int _tmain(int argc, char *argv[]) {
       z     +=  cos(-yaw*M_PI/180.0f)*jp[0].y*elapsed0*30 + sin(-yaw*M_PI/180.0f)*jp[0].x*elapsed0*30;
     */
     /*
-    mst = ms.getMouseState();
-    yaw   +=  mst.axis[0]*elapsed0*20;
-    pitch += -mst.axis[1]*elapsed0*20;
-
-    key_up    = kb.getKeyState(KEY_W);
-    key_down  = kb.getKeyState(KEY_S);
-    key_left  = kb.getKeyState(KEY_A);
-    key_right = kb.getKeyState(KEY_D);
-    keyx = -key_left +  key_right;
-    keyz =  key_up   + -key_down;
-    x     += -cos(-yaw*M_PI/180.0f)*keyx*elapsed0*30 + sin(-yaw*M_PI/180.0f)*keyz*elapsed0*30;
-    z     +=  cos(-yaw*M_PI/180.0f)*keyz*elapsed0*30 + sin(-yaw*M_PI/180.0f)*keyx*elapsed0*30;
+      mst = ms.getMouseState();
+      yaw   +=  mst.axis[0]*elapsed0*20;
+      pitch += -mst.axis[1]*elapsed0*20;
     */
 
+    int key_left = 0, key_right = 0, key_up = 0, key_down = 0;
+    if( ::GetAsyncKeyState('A') & 0x8000f ) {
+      key_left = 1;
+    }
+    if( ::GetAsyncKeyState('D') & 0x8000f ) {
+      key_right = 1;
+    }
+
+    if( ::GetAsyncKeyState('W') & 0x8000f ) {
+      key_up = 1;
+    }
+    if( ::GetAsyncKeyState('S') & 0x8000f ) {
+      key_down = 1;
+    }
+    
+      keyx = -key_left +  key_right;
+      keyz =  key_up   + -key_down;
+      x     += -cos(-yaw*M_PI/180.0f)*keyx*elapsed0*30 + sin(-yaw*M_PI/180.0f)*keyz*elapsed0*30;
+      z     +=  cos(-yaw*M_PI/180.0f)*keyz*elapsed0*30 + sin(-yaw*M_PI/180.0f)*keyx*elapsed0*30;
+    
     // rendering
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
