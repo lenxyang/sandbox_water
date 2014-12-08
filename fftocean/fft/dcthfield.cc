@@ -4,13 +4,20 @@
 #include "base/rand_util.h"
 #include <cmath>
 
+#include <random>
+
 using azer::kPI;
+
+float uniformRandom() {
+  return (float)rand()/RAND_MAX;
+  // return ::base::RandDouble();
+}
 
 std::complex<float> gaussianRandom() {
   float x1, x2, w;
   do {
-    x1 = 2.f * ::base::RandDouble() - 1.f;
-    x2 = 2.f * ::base::RandDouble() - 1.f;
+    x1 = 2.f * uniformRandom() - 1.f;
+    x2 = 2.f * uniformRandom() - 1.f;
     w = x1 * x1 + x2 * x2;
   } while ( w >= 1.f );
   w = std::sqrt((-2.f * log(w)) / w);
@@ -25,9 +32,9 @@ DCTHField::DCTHField(Tile* tile, float unit_width)
     , N(tile->cell_num())
 	, fft_(tile->cell_num()) {
   nodes_.reset(new Node[(N + 1) * (N + 1)]);
-  for (int n = 0; n < N; ++n) {
-    for (int m = 0; m < N; ++m) {
-      int index = m * (N + 1) + n;
+  for (int n = 0; n < tile->grid_line_num(); ++n) {
+    for (int m = 0; m < tile->grid_line_num(); ++m) {
+      int index = m * tile->grid_line_num() + n;
       nodes_.get()[index].h0 = tilde0(n, m);
       nodes_.get()[index]._h0 = std::conj(tilde0(-n, -m));
     }

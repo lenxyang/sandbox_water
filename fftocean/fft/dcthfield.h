@@ -80,8 +80,9 @@ void DCTHField::SimulateWaveFFT(float t, TVertex* data) {
   float signs[] = {1.0f, -1.0f};
   for (int m = 0; m < N; ++m) {
     for (int n = 0; n < N; ++n) {
-      int index = m * (N + 1) + n;
-      TVertex* v = data + index;
+      int index = m * N + n;
+      int index2 = m * (N + 1) + n;
+      TVertex* v = data + index2;
       float height = htilde_c_.get()[index].real();
       float sign = signs[(n + m) & 1];
       v->position.y = height * sign;

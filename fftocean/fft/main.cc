@@ -27,8 +27,7 @@ class MainDelegate : public azer::WindowHost::Delegate {
  public:
   MainDelegate() 
       : tile_(6)
-      , tick_(0.1f)
-      , hfield_(&tile_, 1.0f) {
+      , tick_(0.1f) {
   }
   virtual void OnCreate() {}
 
@@ -41,7 +40,7 @@ class MainDelegate : public azer::WindowHost::Delegate {
   azer::Camera camera_;
   Tile tile_;
   float tick_;
-  DCTHField hfield_;
+  std::unique_ptr<DCTHField> hfield_;
   std::unique_ptr<azer::VertexData> vdataptr_;
   azer::VertexBufferPtr vb_;
   azer::IndicesBufferPtr ib_;
@@ -75,7 +74,8 @@ void MainDelegate::InitPhysicsBuffer(azer::RenderSystem* rs) {
   DiffuseEffect::Vertex* vend = 
       tile_.InitVerticesData<DiffuseEffect::Vertex>(v, VertexInit());
   tick_ += 1.0f / 30.0f;
-  hfield_.SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
+  hfield_.reset(new DCTHField(&tile_, 1.0f));
+  hfield_->SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
   
   DCHECK_EQ(vend - v, tile_.vertices_num());
   
@@ -98,7 +98,7 @@ void MainDelegate::OnUpdateScene(double time, float delta_time) {
     uint32 size = tile_.vertices_num() * sizeof(DiffuseEffect::Vertex);
     DiffuseEffect::Vertex* v = (DiffuseEffect::Vertex*)vdataptr_->pointer();
     tick_ += 1.0f / 30.0f;
-    hfield_.SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
+    hfield_->SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
     azer::HardwareBufferDataPtr hbptr(vb_->map(azer::kWriteDiscard));
     memcpy(hbptr->data_ptr(), v, size);
     vb_->unmap();

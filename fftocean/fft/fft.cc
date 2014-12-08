@@ -7,7 +7,7 @@ const float FFT::kPI2 = azer::kPI * azer::kPI;
 FFT::FFT(const int dim) 
     : which_(0)
     , kDim(dim)
-    , kLogDim(std::log(dim) / std::log(2.0f)) {
+    , kLogDim(std::log(dim) / std::log(2)) {
   reversed_.reset(new uint32[kDim]);
   for (int i = 0; i < kDim; ++i) {
     reversed_.get()[i] = reverse(i);
@@ -64,14 +64,18 @@ void FFT::fft(std::complex<float>* input, std::complex<float>* output,
 
   for (int i = 1; i < kLogDim; ++i) {
     which_ ^= 1;
+    int cur = which_;
+    int prev = which_ ^ 1;
     for (int j = 0; j < loops; ++j) {
       for (int k = 0; k < size_over_2; ++k) {
-        c[which_][size * j + k] = c[which_ ^ 1][size * j + k]
-            + c[which_ ^ 1][size * j + size_over_2 + k] * omega(w, k);
+        int index = size * j + k;
+        int index2 = size * j + size_over_2 + k;
+        c[cur][index] = c[prev][index] + c[prev][index2] * omega(w, k);
       }
       for (int k = size_over_2; k < size; ++k) {
-        c[which_][size * j + k] = c[which_ ^ 1][size * j + k]
-            - c[which_ ^ 1][size * j + size_over_2 + k] * omega(w, k);
+        int index = size * j + k;
+        int index2 = size * j - size_over_2 + k;
+		c[cur][index] = c[prev][index2] - c[prev][index] * omega(w, k - size_over_2);
       }
     }
 
