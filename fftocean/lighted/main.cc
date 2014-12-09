@@ -19,7 +19,8 @@ class VertexInit {
     vertex->position.x = ((float)j - tile.grid_line_num() / 2.0f) * 1.0f;
     vertex->position.z = ((float)i - tile.grid_line_num() / 2.0f) * 1.0f;
     vertex->position.y = 0.0f;
-    vertex->position.w = 1.0f;
+
+    vertex->normal = azer::Vector3(0.0f, 1.0f, 0.0f);
   }
 };
 
@@ -46,6 +47,9 @@ class MainDelegate : public azer::WindowHost::Delegate {
   azer::IndicesBufferPtr ib_;
   std::unique_ptr<DiffuseEffect> effect_;
 
+  DirLight light_;
+  Material mtrl_;
+
   DISALLOW_COPY_AND_ASSIGN(MainDelegate);
 };
 
@@ -64,6 +68,14 @@ void MainDelegate::Init() {
   CHECK(azer::LoadPixelShader(EFFECT_GEN_DIR SHADER_NAME ".ps", &shaders));
   effect_.reset(new DiffuseEffect(shaders.GetShaderVec(), rs));
   InitPhysicsBuffer(rs);
+
+  light_.dir = azer::Vector4(0.0f, -0.3f, 0.75f, 0.0f);
+  light_.diffuse = azer::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  light_.ambient = azer::Vector4(0.2f, 0.2f, 0.2f, 1.0f);
+  mtrl_.diffuse_color = azer::Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+  mtrl_.specular_color = azer::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  mtrl_.specular_power = 32.0f;
+  mtrl_.specular_intensity = 1.0f;
 }
 
 
@@ -115,6 +127,10 @@ void MainDelegate::OnRenderScene(double time, float delta_time) {
 
   azer::Matrix4 world = std::move(azer::Translate(0.0f, 0.0f, 0.0f));
   effect_->SetPVW(std::move(camera_.GetProjViewMatrix() * world));
+  effect_->SetCameraPos(azer::Vector4(camera_.position(), 1.0f));
+  effect_->SetWorld(world);
+  effect_->SetDirLight(light_);
+  effect_->SetMaterial(mtrl_);
   effect_->Use(renderer);
   renderer->DrawIndex(vb_.get(), ib_.get(), azer::kTriangleList);
 }

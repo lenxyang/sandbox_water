@@ -1,3 +1,5 @@
+#include "azer/sandbox/base/afx/light.afxi"
+
 technique [
     name = "diffuse"
     ps_main="ps_main"
@@ -5,26 +7,42 @@ technique [
     class_name="DiffuseEffect"
            ];
 
-
 [uniform_func="SetPVW"] uniform mat4 pvw;
+[uniform_func="SetWorld"] uniform mat4 world;
+[uniform_func="SetCameraPos"] uniform vec4 camerapos;
+[uniform_func="SetDirLight"] uniform sandbox::DirLight light;
+[uniform_func="SetMaterial"] uniform sandbox::Material mtrl;
 
 exchange struct VsOutput {
   [semantic="position" system="true"]
   vec4 position;
+  vec2 texcoord0;
+  vec4 normal;
+  vec4 wpos;
 };
 
 exchange struct VSInput {
-  vec4 position;
+  vec3 position;
+  vec2 texcoord0;
+  vec3 normal;
 };
 
 VsOutput vs_main(VSInput input) {
   VsOutput o;
-  o.position = pvw * input.position;
+  o.position = pvw * vec4(input.position, 1.0f);
+  o.normal = world * vec4(input.normal, 0.0);
+  o.texcoord0 = input.texcoord0;
+  o.wpos = world * vec4(input.position, 1.0f);
   return o;
 }
 
 [system="true" semantic="target"]
 vec4 ps_main(VsOutput o) {
-  return vec4(0.4, 0.4, 0.4, 1.0);
+  float diffuse_factor = clamp(dot(normalize(o.normal.xyz), -light.dir.xyz),
+                               0.0, 1.0);
+  vec3 light_factor = light.ambient.xyz + light.diffuse.xyz * diffuse_factor;
+  vec3 color = light_factor * mtrl.diffuse_color.xyz;
+  color += sandbox::CalcSpecularColor(camerapos, o.wpos, o.normal, light, mtrl);
+  return vec4(color, 1.0);
 }
 
