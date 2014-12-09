@@ -5,11 +5,11 @@ afx("effect") {
   filename = "diffuse"
 }
 
-executable("fft") {
-  output_name = "fftocean_fft"
+executable("lighted") {
+  output_name = "fftocean_lighted"
   sources = [
-    "dcthfield.cc",
-    "dcthfield.h",
+    "ocean.cc",
+    "ocean.h",
     "main.cc",
     "tile.cc",
     "tile.h",

@@ -1,4 +1,4 @@
-#include "azer/sandbox/water/fftocean/fft/dcthfield.h"
+#include "azer/sandbox/water/fftocean/lighted/ocean.h"
 
 #include "azer/math/math.h"
 #include "base/rand_util.h"
@@ -24,7 +24,7 @@ std::complex<float> gaussianRandom() {
   return std::complex<float>(x1 * w, x2 * w);
 }
 
-DCTHField::DCTHField(Tile* tile, float unit_width) 
+Ocean::Ocean(Tile* tile, float unit_width) 
     : wind_(azer::Vector2(0.0f, 32.0f))
     , length_(tile->cell_num() * unit_width)
     , A(0.0005f)
@@ -43,7 +43,7 @@ DCTHField::DCTHField(Tile* tile, float unit_width)
   htilde_c_.reset(new std::complex<float>[N * N]);
 }
 
-float DCTHField::dispersion(int n, int m) {
+float Ocean::dispersion(int n, int m) {
   // w_0
   float w_0 = 2.0f * azer::kPI / 200.0f;
   float kx = kPI * (2 * n - N) / length();
@@ -51,7 +51,7 @@ float DCTHField::dispersion(int n, int m) {
   return std::floor(std::sqrt(G * sqrt(kx * kx + kz * kz)) / w_0) * w_0;
 }
 
-float DCTHField::phillips(int n, int m) {
+float Ocean::phillips(int n, int m) {
   azer::Vector2 k(kPI * (2 * n - N) / length(),
                   kPI * (2 * m - N) / length());
   float k_length = k.length();
@@ -72,12 +72,12 @@ float DCTHField::phillips(int n, int m) {
 }
 
 
-std::complex<float> DCTHField::tilde0(int n, int m) {
+std::complex<float> Ocean::tilde0(int n, int m) {
   std::complex<float> r = std::move(gaussianRandom());
   return r * sqrt(phillips(n, m) / 2.0f);
 }
 
-std::complex<float> DCTHField::tilde(float t, int n, int m) {
+std::complex<float> Ocean::tilde(float t, int n, int m) {
   int index = m * (N + 1) + n;
   std::complex<float> htilde0(nodes_.get()[index].h0);
   std::complex<float> htilde0mk(nodes_.get()[index]._h0);
@@ -91,7 +91,7 @@ std::complex<float> DCTHField::tilde(float t, int n, int m) {
 }
 
 
-void DCTHField::Calc(const azer::Vector2& x, float t, DCTHField::NodeInfo* info) {
+void Ocean::Calc(const azer::Vector2& x, float t, Ocean::NodeInfo* info) {
   std::complex<float> h(0.0f, 0.0f);
   for (int m = 0; m < N; ++m) {
     float kz = 2.0f * kPI * (m - N / 2.0f) / length();

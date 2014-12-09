@@ -2,8 +2,8 @@
 #include "azer/base/appinit.h"
 #include "base/files/file_path.h"
 #include "azer/sandbox/base/camera_control.h"
-#include "azer/sandbox/water/fftocean/fft/tile.h"
-#include "azer/sandbox/water/fftocean/fft/dcthfield.h"
+#include "azer/sandbox/water/fftocean/lighted/tile.h"
+#include "azer/sandbox/water/fftocean/lighted/ocean.h"
 
 #include <tchar.h>
 
@@ -40,7 +40,7 @@ class MainDelegate : public azer::WindowHost::Delegate {
   azer::Camera camera_;
   Tile tile_;
   float tick_;
-  std::unique_ptr<DCTHField> hfield_;
+  std::unique_ptr<Ocean> hfield_;
   std::unique_ptr<azer::VertexData> vdataptr_;
   azer::VertexBufferPtr vb_;
   azer::IndicesBufferPtr ib_;
@@ -74,7 +74,7 @@ void MainDelegate::InitPhysicsBuffer(azer::RenderSystem* rs) {
   DiffuseEffect::Vertex* vend = 
       tile_.InitVerticesData<DiffuseEffect::Vertex>(v, VertexInit());
   tick_ += 1.0f / 30.0f;
-  hfield_.reset(new DCTHField(&tile_, 1.0f));
+  hfield_.reset(new Ocean(&tile_, 1.0f));
   hfield_->SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
   
   DCHECK_EQ(vend - v, tile_.vertices_num());

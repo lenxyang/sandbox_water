@@ -4,5 +4,6 @@ group("fftocean") {
     "tile",    # 仅仅渲染一个 tile
     "hfield",  # 使用 dct 计算 hfield
     "fft",     # 使用 fft 计算 hfield
+    "lighted", # 计算 normal
   ]
 }

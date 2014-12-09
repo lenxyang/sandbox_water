@@ -1,4 +1,4 @@
-#include "azer/sandbox/water/fftocean/fft/fft.h"
+#include "azer/sandbox/water/fftocean/lighted/fft.h"
 
 #include "azer/math/math.h"
 

@@ -1,4 +1,4 @@
-#include "azer/sandbox/water/fftocean/hfield/tile.h"
+#include "azer/sandbox/water/fftocean/lighted/tile.h"
 
 int32* Tile::CalcIndicesForPitch(
     int level, const Pitch& pitch, int32* start) const {

@@ -5,12 +5,12 @@
 
 #include "base/basictypes.h"
 #include "azer/math/math.h"
-#include "azer/sandbox/water/fftocean/fft/tile.h"
-#include "azer/sandbox/water/fftocean/fft/fft.h"
+#include "azer/sandbox/water/fftocean/lighted/tile.h"
+#include "azer/sandbox/water/fftocean/lighted/fft.h"
 
-class DCTHField {
+class Ocean {
  public:
-  DCTHField(Tile* tile, float unit_width);
+  Ocean(Tile* tile, float unit_width);
   float length() const { return length_;}
   struct NodeInfo {
     std::complex<float> height;
@@ -42,11 +42,11 @@ class DCTHField {
     std::complex<float> _h0;
   };
   std::shared_ptr<Node> nodes_;
-  DISALLOW_COPY_AND_ASSIGN(DCTHField);
+  DISALLOW_COPY_AND_ASSIGN(Ocean);
 };
 
 template<class TVertex>
-void DCTHField::SimulateWave(float t, TVertex* data) {
+void Ocean::SimulateWave(float t, TVertex* data) {
   NodeInfo info;
   for (int m = 0; m < N; ++m) {
     for (int n = 0; n < N; ++n) {
@@ -60,7 +60,7 @@ void DCTHField::SimulateWave(float t, TVertex* data) {
 }
 
 template<class TVertex>
-void DCTHField::SimulateWaveFFT(float t, TVertex* data) {
+void Ocean::SimulateWaveFFT(float t, TVertex* data) {
   NodeInfo info;
   for (int m = 0; m < N; ++m) {
     for (int n = 0; n < N; ++n) {
