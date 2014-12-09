@@ -59,7 +59,7 @@ void MainDelegate::Init() {
   renderer->SetViewport(azer::Renderer::Viewport(0, 0, 800, 600));
   CHECK(renderer->GetFrontFace() == azer::kCounterClockwise);
   CHECK(renderer->GetCullingMode() == azer::kCullBack);
-  renderer->SetFillMode(azer::kWireFrame);
+  // renderer->SetFillMode(azer::kWireFrame);
   renderer->EnableDepthTest(true);
   camera_.SetPosition(azer::Vector3(0.0f, 0.0f, 5.0f));
 
@@ -88,9 +88,9 @@ void MainDelegate::InitPhysicsBuffer(azer::RenderSystem* rs) {
   tick_ += 1.0f / 30.0f;
   hfield_.reset(new Ocean(&tile_, 1.0f));
   hfield_->SimulateWaveFFT<DiffuseEffect::Vertex>(tick_, v);
-  
+ 
   DCHECK_EQ(vend - v, tile_.vertices_num());
-  
+ 
   azer::IndicesData idata(tile_.indices_num(), azer::IndicesData::kUint32);
   tile_.CalcIndices((int32*)idata.pointer());
   azer::VertexBuffer::Options vbopt;

@@ -40,7 +40,11 @@ Ocean::Ocean(Tile* tile, float unit_width)
     }
   }
 
-  htilde_c_.reset(new std::complex<float>[N * N]);
+  htilde_.reset(new std::complex<float>[N * N]);
+  htilde_dx_.reset(new std::complex<float>[N * N]);
+  htilde_dz_.reset(new std::complex<float>[N * N]);
+  htilde_slopex_.reset(new std::complex<float>[N * N]);
+  htilde_slopez_.reset(new std::complex<float>[N * N]);
 }
 
 float Ocean::dispersion(int n, int m) {

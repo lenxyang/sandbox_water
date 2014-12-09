@@ -28,7 +28,11 @@ class Ocean {
   std::complex<float> tilde0(int n, int m);
   std::complex<float> tilde(float t , int n, int m);
 
-  std::unique_ptr<std::complex<float> > htilde_c_;
+  std::unique_ptr<std::complex<float> > htilde_;
+  std::unique_ptr<std::complex<float> > htilde_dx_;
+  std::unique_ptr<std::complex<float> > htilde_dz_;
+  std::unique_ptr<std::complex<float> > htilde_slopex_;
+  std::unique_ptr<std::complex<float> > htilde_slopez_;
 
   azer::Vector2 wind_;
   float length_;
@@ -61,20 +65,46 @@ void Ocean::SimulateWave(float t, TVertex* data) {
 
 template<class TVertex>
 void Ocean::SimulateWaveFFT(float t, TVertex* data) {
+  using azer::kPI;
+  std::complex<float>* htilde = htilde_.get();
+  std::complex<float>* htilde_slopex = htilde_slopex_.get();
+  std::complex<float>* htilde_slopez = htilde_slopez_.get();
+  std::complex<float>* htilde_dx = htilde_dx_.get();
+  std::complex<float>* htilde_dz = htilde_dz_.get();
   NodeInfo info;
   for (int m = 0; m < N; ++m) {
+    float kz = kPI * (2.0f * m - N) / length();
     for (int n = 0; n < N; ++n) {
+      float kx = kPI * (2.0f * n - N) / length();
+      float len = std::sqrt(kx * kx + kz * kz);
       int index = m * N + n;
-      htilde_c_.get()[index] = tilde(t, n, m);
+      htilde[index] = tilde(t, n, m);
+      htilde_slopex[index] = htilde[index] * std::complex<float>(0, kx);
+      htilde_slopez[index] = htilde[index] * std::complex<float>(0, kz);
+      if (len > 0.000001) {
+        htilde_dx[index] = htilde[index] * std::complex<float>(0, -kx/len);
+        htilde_dz[index] = htilde[index] * std::complex<float>(0, -kz/len);
+      } else {
+        htilde_dx[index] = std::complex<float>(0.0f, 0.0f);
+        htilde_dz[index] = std::complex<float>(0.0f, 0.0f);
+      }
     }
   }
 
   for (int m = 0; m < N; ++m) {
-    fft_.fft(htilde_c_.get(), htilde_c_.get(), 1, m * N);
+    fft_.fft(htilde, htilde, 1, m * N);
+    fft_.fft(htilde_slopex, htilde_slopex, 1, m * N);
+    fft_.fft(htilde_slopez, htilde_slopez, 1, m * N);
+    fft_.fft(htilde_dx, htilde_dx, 1, m * N);
+    fft_.fft(htilde_dz, htilde_dz, 1, m * N);
   }
 
   for (int n = 0; n < N; ++n) {
-    fft_.fft(htilde_c_.get(), htilde_c_.get(), N, n);
+    fft_.fft(htilde, htilde, N, n);
+    fft_.fft(htilde_slopex, htilde_slopex, N, n);
+    fft_.fft(htilde_slopez, htilde_slopez, N, n);
+    fft_.fft(htilde_dx, htilde_dx, N, n);
+    fft_.fft(htilde_dz, htilde_dz, N, n);
   }
 
   float signs[] = {1.0f, -1.0f};
@@ -83,9 +113,18 @@ void Ocean::SimulateWaveFFT(float t, TVertex* data) {
       int index = m * N + n;
       int index2 = m * (N + 1) + n;
       TVertex* v = data + index2;
-      float height = htilde_c_.get()[index].real();
+      float height = htilde[index].real();
       float sign = signs[(n + m) & 1];
       v->position.y = height * sign;
+
+      htilde_slopex[index] *= sign;
+      htilde_slopez[index] *= sign;
+      htilde_dx[index] *= sign;
+      htilde_dz[index] *= sign;
+      azer::Vector3 normal(0.0f - htilde_slopex[index].real(),
+                           1.0f,
+                           0.0f - htilde_slopez[index].real());
+      v->normal = std::move(normal.NormalizeCopy());
     }
   }
 }
