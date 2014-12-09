@@ -63,7 +63,7 @@ void FFT::fft(std::complex<float>* input, std::complex<float>* output,
   int size_over_2 = 1;
   int w = 0;
 
-  for (int i = 1; i < kLogDim; ++i) {
+  for (int i = 1; i <= kLogDim; ++i) {
     which_ ^= 1;
     int cur = which_;
     int prev = which_ ^ 1;
