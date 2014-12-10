@@ -1,0 +1,67 @@
+
+
+group("keithlantz") {
+  deps = [
+    ":dct",
+    ":fft",
+  ]
+}
+
+config("keithlantz-config") {
+  include_dirs = ["src"]
+}
+
+static_library("lib") {
+  sources = [
+    "src/src/buffer.cc",
+    "src/src/buffer.h",
+    "src/src/complex.cc",
+    "src/src/complex.h",
+    "src/src/fft.cc",
+    "src/src/fft.h",
+    "src/src/glhelper.cc",
+    "src/src/glhelper.h",
+    "src/src/misc.cc",
+    "src/src/misc.h",
+    "src/src/obj.cc",
+    "src/src/obj.h",
+    "src/src/timer.cc",
+    "src/src/timer.h",
+    "src/src/vector.cc",
+    "src/src/vector.h",
+    "src/ocean.cc",
+    "src/ocean.h",
+    #"src/src/joystick.cc",
+    #"src/src/joystick.h",
+    #"src/src/keyboard.cc",
+    #"src/src/keyboard.h",
+    #"src/src/mouse.cc",
+    #"src/src/mouse.h",
+  ]
+  public_configs = [":keithlantz-config"]
+  deps = [
+    "//azer/third_party/glm",
+    "//azer/third_party/glew",
+    "//azer/externlib/SDL:SDL-1.2",
+    "//base:base",
+  ]
+  public_deps = deps
+}
+
+executable("dct") {
+  output_name = "keithlantz_dct"
+  sources = [
+    "src/dct_main.cc",
+  ]
+  deps = [":lib"]
+  configs += ["//azer/build/config:opengl"]
+}
+
+executable("fft") {
+  output_name = "keithlantz_fft"
+  sources = [
+    "src/fft_main.cc",
+  ]
+  deps = [":lib"]
+  configs += ["//azer/build/config:opengl"]
+}
