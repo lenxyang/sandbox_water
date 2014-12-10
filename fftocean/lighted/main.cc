@@ -48,7 +48,7 @@ class MainDelegate : public azer::WindowHost::Delegate {
   std::unique_ptr<DiffuseEffect> effect_;
 
   DirLight light_;
-  Material mtrl_;
+  DiffuseEffect::WaterMaterial mtrl_;
 
   DISALLOW_COPY_AND_ASSIGN(MainDelegate);
 };
@@ -69,13 +69,12 @@ void MainDelegate::Init() {
   effect_.reset(new DiffuseEffect(shaders.GetShaderVec(), rs));
   InitPhysicsBuffer(rs);
 
-  light_.dir = azer::Vector4(0.0f, -0.3f, 0.75f, 0.0f);
+  light_.dir = azer::Vector4(0.0f, -0.6f, 0.75f, 0.0f).NormalizeCopy();
   light_.diffuse = azer::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  light_.ambient = azer::Vector4(0.2f, 0.2f, 0.2f, 1.0f);
-  mtrl_.diffuse_color = azer::Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-  mtrl_.specular_color = azer::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  mtrl_.specular_power = 32.0f;
-  mtrl_.specular_intensity = 1.0f;
+  light_.ambient = azer::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  mtrl_.diffuse_color = azer::Vector4(0.0f, 0.65f, 0.75f, 1.0f);
+  mtrl_.ambient_color = azer::Vector4(0.5f, 0.65f, 0.75f, 1.0f);
+  mtrl_.specular_color = azer::Vector4(1.0f, .25f, 0.0f, 1.0f);
 }
 
 
