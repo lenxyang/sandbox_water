@@ -15,8 +15,7 @@ exchange struct VsOutput {
   vec4 position;
   vec2 texcoord0;
   vec4 normal;
-  vec4 wpos;
-  vec4 halfway;
+  vec4 color;
 };
 
 exchange struct VSInput {
@@ -38,16 +37,24 @@ vertex_type="VsOutput"
 input_primitive_type="point"
 output_primitive_type="line"]
 void gs_main(VsOutput v[1]) {
+  vec4 color;
+  if (v[0].normal.y > 0) {
+    color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+  } else {
+    color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+  }
   gsemit VsOutput o;
   o = v[0];
+  o.color = color;
   emit_vertex();
   o.position = v[0].position + normalize(v[0].normal);
+  o.color = color;
   emit_vertex();
   end_primitive();
 }
 
 [system="true" semantic="target"]
 vec4 ps_main(VsOutput o) {
-  return vec4(1.0f, 0.0f, 0.0f, 1.0);
+  return o.color;
 }
 
