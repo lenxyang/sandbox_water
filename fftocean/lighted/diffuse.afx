@@ -54,7 +54,7 @@ vec4 ps_main(VsOutput o) {
   float diffuse_factor = max(dot(normalize(o.normal.xyz), -light.dir.xyz), 0.0);
   vec3 color = light.ambient.xyz * mtrl.ambient_color.xyz * 0.3
       + light.diffuse.xyz * diffuse_factor * mtrl.diffuse_color.xyz * 0.3
-      + mtrl.specular_color.xyz * pow(specular_factor, 120.0) * 1.8;
+      + mtrl.specular_color.xyz * pow(specular_factor, 32.0) * 1.8;
   vec3 fc = color * (1 - fog_factor) + vec3(0.24, 0.75, 0.65) * fog_factor;
   return vec4(fc, 1.0);
 }

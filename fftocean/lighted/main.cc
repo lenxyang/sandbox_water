@@ -10,6 +10,9 @@
 #include "diffuse.afx.h"
 #define SHADER_NAME "/diffuse.afx"
 
+#include "gsnormal.afx.h"
+#define GS_SHADER_NAME "/gsnormal.afx"
+
 using base::FilePath;
 
 class VertexInit {
@@ -46,6 +49,7 @@ class MainDelegate : public azer::WindowHost::Delegate {
   azer::VertexBufferPtr vb_;
   azer::IndicesBufferPtr ib_;
   std::unique_ptr<DiffuseEffect> effect_;
+  std::unique_ptr<GSNormalEffect> gs_effect_;
 
   DirLight light_;
   DiffuseEffect::WaterMaterial mtrl_;
@@ -67,6 +71,12 @@ void MainDelegate::Init() {
   CHECK(azer::LoadVertexShader(EFFECT_GEN_DIR SHADER_NAME ".vs", &shaders));
   CHECK(azer::LoadPixelShader(EFFECT_GEN_DIR SHADER_NAME ".ps", &shaders));
   effect_.reset(new DiffuseEffect(shaders.GetShaderVec(), rs));
+
+  azer::ShaderArray gs_shaders;
+  CHECK(azer::LoadVertexShader(EFFECT_GEN_DIR GS_SHADER_NAME ".vs", &gs_shaders));
+  CHECK(azer::LoadPixelShader(EFFECT_GEN_DIR GS_SHADER_NAME ".ps", &gs_shaders));
+  CHECK(azer::LoadGeometryShader(EFFECT_GEN_DIR GS_SHADER_NAME ".gs", &gs_shaders));
+  gs_effect_.reset(new GSNormalEffect(gs_shaders.GetShaderVec(), rs));
   InitPhysicsBuffer(rs);
 
   light_.dir = azer::Vector4(0.0f, -0.6f, 0.75f, 0.0f).NormalizeCopy();
@@ -132,6 +142,11 @@ void MainDelegate::OnRenderScene(double time, float delta_time) {
   effect_->SetMaterial(mtrl_);
   effect_->Use(renderer);
   renderer->DrawIndex(vb_.get(), ib_.get(), azer::kTriangleList);
+
+  gs_effect_->SetPVW(std::move(camera_.GetProjViewMatrix() * world));
+  gs_effect_->SetWorld(world);
+  gs_effect_->Use(renderer);
+  renderer->Draw(vb_.get(), azer::kPointList);
 }
 
 int main(int argc, char* argv[]) {

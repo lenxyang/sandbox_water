@@ -1,0 +1,53 @@
+
+technique [
+    name = "gsnormal"
+    ps_main="ps_main"
+    gs_main="gs_main"
+    vs_main="vs_main"
+    class_name="GSNormalEffect"
+           ];
+
+[uniform_func="SetPVW"] uniform mat4 pvw;
+[uniform_func="SetWorld"] uniform mat4 world;
+
+exchange struct VsOutput {
+  [semantic="position" system="true"]
+  vec4 position;
+  vec2 texcoord0;
+  vec4 normal;
+  vec4 wpos;
+  vec4 halfway;
+};
+
+exchange struct VSInput {
+  vec3 position;
+  vec2 texcoord0;
+  vec3 normal;
+};
+
+VsOutput vs_main(VSInput input) {
+  VsOutput o;
+  o.position = pvw * vec4(input.position, 1.0f);
+  o.normal = world * vec4(input.normal, 0.0);
+  o.texcoord0 = input.texcoord0;
+  return o;
+}
+
+[max_vertex_count="18" 
+vertex_type="VsOutput" 
+input_primitive_type="point"
+output_primitive_type="line"]
+void gs_main(VsOutput v[1]) {
+  gsemit VsOutput o;
+  o = v[0];
+  emit_vertex();
+  o.position = v[0].position + normalize(v[0].normal);
+  emit_vertex();
+  end_primitive();
+}
+
+[system="true" semantic="target"]
+vec4 ps_main(VsOutput o) {
+  return vec4(1.0f, 0.0f, 0.0f, 1.0);
+}
+

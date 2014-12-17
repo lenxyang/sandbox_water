@@ -5,6 +5,11 @@ afx("effect") {
   filename = "diffuse"
 }
 
+afx("gseffect") {
+  source = "gsnormal.afx"
+  filename = "gsnormal"
+}
+
 executable("lighted") {
   output_name = "fftocean_lighted"
   sources = [
@@ -22,6 +27,7 @@ executable("lighted") {
     "//azer/render",
     "//azer/sandbox/base",
     ":effect",
+    ":gseffect",
   ]
 
   gen_dir = rebase_path(target_gen_dir)
