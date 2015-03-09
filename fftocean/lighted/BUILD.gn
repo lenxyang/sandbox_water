@@ -24,7 +24,7 @@ executable("lighted") {
 
   deps = [
     "//base",
-    "//azer/render",
+    "//azer",
     "//azer/sandbox/base",
     ":effect",
     ":gseffect",

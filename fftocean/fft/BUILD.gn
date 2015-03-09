@@ -19,7 +19,7 @@ executable("fft") {
 
   deps = [
     "//base",
-    "//azer/render",
+    "//azer",
     "//azer/sandbox/base",
     ":effect",
   ]
